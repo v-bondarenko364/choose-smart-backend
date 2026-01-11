@@ -1,0 +1,11 @@
+node_modules/
+resources/
+.idea/
+.DS_Store
+
+# Ignore app related items
+dist/
+.env
+
+# Ignore /reports folder
+reports/

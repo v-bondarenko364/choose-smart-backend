@@ -1,0 +1,3 @@
+{
+	"src/**/*.ts": ["npm run lint:rules", "bash -c 'npm run lint:ts'"],
+}
