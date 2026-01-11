@@ -5,39 +5,54 @@ import { normalizeResponse } from '@/utils/general';
 
 import AuthService from './auth.service';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 class AuthController {
   public static async loginWithToken(request: Request, response: Response) {
-    const { user, token } = await AuthService.loginWithToken();
+    try {
+      const userData = await AuthService.verifyToken(request.body.token);
 
-    // FIXME: If not user, return 401
-    // FIXME: verify that it's works
-    response.cookie('token', token, {
-      httpOnly: true,
-      expires: addDays(new Date(), 7),
-      secure: process.env.NODE_ENV === 'production',
-      // domain:
-      //   process.env.NODE_ENV === 'production' ? '.endurepath.com' : undefined,
-      // sameSite: 'none',
-    });
+      response.cookie('token', request.body.token, {
+        httpOnly: true,
+        expires: addDays(new Date(), 7),
+        secure: isProduction,
+        domain: isProduction ? '.choosesm.art' : undefined,
+        sameSite: 'none',
+      });
 
-    response.send(normalizeResponse(200, { user }));
+      response.send(normalizeResponse(200, userData));
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Error during login with token';
+
+      return normalizeResponse(400, errorMessage);
+    }
   }
   public static async loginWithVendor(request: Request, response: Response) {
-    const { user, token } = await AuthService.loginWithVendor();
+    try {
+      const { user, token } = await AuthService.loginWithVendor(
+        request.body.token,
+      );
 
-    // FIXME: If not user, return 401
-    // FIXME: verify that it's works
-    // TODO: move to another util function
-    response.cookie('token', token, {
-      httpOnly: true,
-      expires: addDays(new Date(), 7),
-      secure: process.env.NODE_ENV === 'production',
-      // domain:
-      //   process.env.NODE_ENV === 'production' ? '.endurepath.com' : undefined,
-      // sameSite: 'none',
-    });
+      response.cookie('token', token, {
+        httpOnly: true,
+        expires: addDays(new Date(), 7),
+        secure: isProduction,
+        domain: isProduction ? '.choosesm.art' : undefined,
+        sameSite: 'none',
+      });
 
-    response.send(normalizeResponse(200, { user }));
+      response.send(normalizeResponse(200, { user }));
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Error during login with vendor';
+
+      return normalizeResponse(400, errorMessage);
+    }
   }
 }
 
