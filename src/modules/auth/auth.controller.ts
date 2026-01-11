@@ -27,10 +27,11 @@ class AuthController {
           ? error.message
           : 'Error during login with token';
 
-      return normalizeResponse(400, errorMessage);
+      response.status(400).send(normalizeResponse(400, errorMessage));
     }
   }
   public static async loginWithVendor(request: Request, response: Response) {
+    console.log('loginWithVendor', request.body);
     try {
       const { user, token } = await AuthService.loginWithVendor(
         request.body.token,
@@ -50,8 +51,7 @@ class AuthController {
         error instanceof Error
           ? error.message
           : 'Error during login with vendor';
-
-      return normalizeResponse(400, errorMessage);
+      response.status(400).send(normalizeResponse(400, errorMessage));
     }
   }
 }
