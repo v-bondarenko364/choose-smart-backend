@@ -3,7 +3,8 @@
     "module": "commonjs",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@generated/*": ["./generated/*"]
     },
     "removeComments": true,
     "resolveJsonModule": true,

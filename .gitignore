@@ -9,3 +9,5 @@ dist/
 
 # Ignore /reports folder
 reports/
+
+/generated/prisma

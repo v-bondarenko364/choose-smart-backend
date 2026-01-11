@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// model Character {
+//   id          Int                 @id @default(autoincrement())
+//   name        String
+//   description String
+//   introImage  String              @map("intro_image")
+//   avatarImage String              @map("avatar_image")
+//   users       User[]
+//   mapImages   CharacterMapImage[]
+//   createdAt   DateTime            @default(now()) @map("created_at")
+//   updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at")
+
+//   @@map("characters")
+// }
+
+// model CharacterMapImage {
+//   id          Int       @id @default(autoincrement())
+//   characterId Int       @map("character_id")
+//   mapId       Int       @map("map_id")
+//   image       String
+//   x           Float
+//   y           Float
+//   width       Float
+//   height      Float
+//   character   Character @relation(fields: [characterId], references: [id])
+//   map         Map       @relation(fields: [mapId], references: [id])
+//   createdAt   DateTime  @default(now()) @map("created_at")
+//   updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+
+//   @@map("character_map_images")
+// }
+
+// model ItemStat {
+//   id        Int      @id @default(autoincrement())
+//   itemId    Int      @map("item_id")
+//   statId    Int      @map("stat_id")
+//   amount    Int
+//   item      MapItem  @relation(fields: [itemId], references: [id])
+//   stat      Stat     @relation(fields: [statId], references: [id])
+//   createdAt DateTime @default(now()) @map("created_at")
+//   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+//   @@unique([itemId, statId])
+//   @@map("item_stats")
+// }
+
+// model UserStat {
+//   id        Int      @id @default(autoincrement())
+//   userId    Int      @map("user_id")
+//   statId    Int      @map("stat_id")
+//   amount    Int
+//   user      User     @relation(fields: [userId], references: [id])
+//   stat      Stat     @relation(fields: [statId], references: [id])
+//   createdAt DateTime @default(now()) @map("created_at")
+//   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+//   @@unique([userId, statId])
+//   @@map("user_stats")
+// }
+
+// model QuestStat {
+//   id        Int      @id @default(autoincrement())
+//   questId   Int      @map("quest_id")
+//   statId    Int      @map("stat_id")
+//   amount    Int
+//   quest     Quest    @relation(fields: [questId], references: [id])
+//   stat      Stat     @relation(fields: [statId], references: [id])
+//   createdAt DateTime @default(now()) @map("created_at")
+//   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+//   @@unique([questId, statId])
+//   @@map("quest_stats")
+// }
+
+// model Stat {
+//   id              Int         @id @default(autoincrement())
+//   name            String
+//   description     String
+//   icon            String
+//   backgroundColor String      @map("background_color")
+//   dailyLimit      Int         @map("daily_limit")
+//   mapStats        MapStat[]
+//   itemStats       ItemStat[]
+//   userStats       UserStat[]
+//   questStats      QuestStat[]
+//   quests          Quest[]
+//   createdAt       DateTime    @default(now()) @map("created_at")
+//   updatedAt       DateTime    @default(now()) @updatedAt @map("updated_at")
+
+//   @@map("stats")
+// }
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  vendorUserId String?  @map("vendor_user_id")
+  // stats               UserStat[]
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("users")
+}
