@@ -2,7 +2,7 @@
   "name": "choose-smart-backend",
   "version": "1.0.0",
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build": "tsc && tsc-alias -p tsconfig.json --outDir dist",
     "start": "ts-node -r tsconfig-paths/register src/index",
     "dev": "nodemon",
     "lint:rules": "eslint ./src --ext .ts",
@@ -46,6 +46,7 @@
     "prettier": "^3.7.4",
     "prisma": "^7.2.0",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3"
   },
   "nodemonConfig": {
