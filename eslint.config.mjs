@@ -50,6 +50,7 @@ export default [
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/naming-convention': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
       // unicorn
       'unicorn/prefer-node-protocol': 'off',
       'unicorn/prefer-module': 'off',
@@ -73,6 +74,7 @@ export default [
       // other
       'class-methods-use-this': 'off',
       'import/no-cycle': 'off',
+      
     },
   },
   prettierConfig,

@@ -1,87 +1,73 @@
-// import type { Context } from 'elysia';
+import type { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
 
-// import jwt from 'jsonwebtoken';
-// import { URL } from 'node:url';
+import Prisma from '@/clients/prisma';
+import { normalizeResponse } from '@/utils/general';
+import { User } from '@/types';
 
-// import prisma from '@/lib/prisma';
-// import { normalizeResponse } from '@/lib/response';
+const userFieldsToSelect = {
+  id: true,
+  email: true,
+  name: true,
+};
 
-// import type { User } from '../modules/user/user.types';
+declare global {
+  export namespace Express {
+    export interface Request {
+      user?: User;
+    }
+  }
+}
 
-// declare global {
-// 	interface Request {
-// 		user?: User;
-// 	}
-// }
+export const authMiddleware = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  // Skip auth check for auth routes and webhooks
+  if (request.path.startsWith('/webhooks/')) {
+    return next();
+  }
 
-// export const authMiddleware = async ({ request, cookie: { token }, status }: Context) => {
-// 	// Handle root path case
-// 	if (request.url === '/') {
-// 		console.log('request.url is / - skipping', request.url);
-// 		console.log('request', request);
+  try {
+    // Extract token from Authorization header or cookie
+    const authHeader = request.headers.authorization;
+    const requestToken =
+      (authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null) ||
+      (request.cookies?.token as string);
 
-// 		return;
-// 	}
+    if (!requestToken) {
+      return response
+        .status(401)
+        .send(normalizeResponse(401, 'No token provided'));
+    }
 
-// 	const path = new URL(request.url).pathname;
+    // Verify JWT token
+    const secret = process.env.JWT_SECRET!;
+    const decoded = jwt.verify(requestToken, secret) as {
+      id: number;
+      email: string;
+    };
 
-// 	// Skip auth check for auth routes and webhooks
-// 	if (path.startsWith('/auth') || path.startsWith('/webhooks/')) {
-// 		return;
-// 	}
+    // Fetch user from database
+    const user = await Prisma.connection.user.findUnique({
+      where: {
+        id: decoded.id,
+        email: decoded.email,
+      },
+      select: userFieldsToSelect,
+    });
 
-// 	try {
-// 		const authHeader = request.headers.get('authorization');
-// 		const requestToken =
-// 			(authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null) ||
-// 			(token.value as string);
+    if (!user) {
+      return response
+        .status(401)
+        .send(normalizeResponse(401, 'User not found'));
+    }
 
-// 		if (!requestToken) {
-// 			console.log('!requestToken');
-
-// 			return status(401, normalizeResponse(null, 401, 'No token provided'));
-// 		}
-
-// 		const secret = process.env.JWT_SECRET!;
-// 		const decoded = jwt.verify(requestToken, secret) as { id: number; email: string };
-// 		const user = await prisma.user.findUnique({
-// 			where: { id: decoded.id, email: decoded.email },
-// 			select: {
-// 				id: true,
-// 				name: true,
-// 				email: true,
-// 				characterId: true,
-// 				characterReflection: true,
-// 				onboardingCompleted: true,
-// 				focusArea: true,
-// 				insightStyle: true,
-// 				regSource: true,
-// 				stats: {
-// 					select: {
-// 						id: true,
-// 						statId: true,
-// 						amount: true,
-// 						stat: {
-// 							select: {
-// 								id: true,
-// 							},
-// 						},
-// 					},
-// 				},
-// 			},
-// 		});
-
-// 		if (!user) {
-// 			console.log('!user');
-
-// 			return status(401, normalizeResponse(null, 401, 'User not found'));
-// 		}
-
-// 		// Store user in request context instead of returning it
-// 		request.user = user as User;
-// 	} catch (error) {
-// 		console.log('ERROR INSIDE MIDDLEWARE', error);
-
-// 		return status(401, normalizeResponse(null, 401, 'Invalid token'));
-// 	}
-// };
+    // Store user in request object
+    request.user = user;
+    next();
+  } catch {
+    return response.status(401).send(normalizeResponse(401, 'Invalid token'));
+  }
+};

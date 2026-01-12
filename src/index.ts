@@ -6,6 +6,7 @@ import cors from 'cors';
 config();
 
 import AuthRouter from './modules/auth/auth.routes';
+import DecisionRouter from './modules/decision/decision.routes';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/auth', AuthRouter);
+app.use('/decisions', DecisionRouter);
 
 app.listen(process.env.PORT, () => {
   console.info(`App started at port ${process.env.PORT}`);

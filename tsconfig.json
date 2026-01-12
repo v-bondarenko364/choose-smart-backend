@@ -23,6 +23,5 @@
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
     "types": ["node"]
-  },
-  "typeRoots": ["./src/typings"]
+  }
 }
