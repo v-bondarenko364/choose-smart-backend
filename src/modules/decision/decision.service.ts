@@ -14,6 +14,22 @@ class DecisionService {
       where: {
         userId,
       },
+      select: {
+        id: true,
+        situation: true,
+        decision: true,
+        reasoning: true,
+        status: true,
+        errorMessage: true,
+        decisionCategory: true,
+        cognitiveBiases: true,
+        missedAlternatives: true,
+        complexityScore: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return decisions;

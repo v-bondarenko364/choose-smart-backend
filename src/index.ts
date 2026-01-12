@@ -2,11 +2,13 @@ import { config } from 'dotenv';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import cron from 'node-cron';
 
 config();
 
 import AuthRouter from './modules/auth/auth.routes';
 import DecisionRouter from './modules/decision/decision.routes';
+import { generateInsights } from './utils/tasks';
 
 const app = express();
 
@@ -29,3 +31,5 @@ app.listen(process.env.PORT, () => {
 process.on('unhandledRejection', (reason, promise) => {
   console.error(`Unhandled Rejection at: ${promise}, reason: ${reason}`);
 });
+
+cron.schedule('*/30 * * * * *', generateInsights);
