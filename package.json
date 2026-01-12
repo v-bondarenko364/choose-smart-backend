@@ -9,7 +9,8 @@
     "lint:ts": "tsc --noEmit",
     "prepare": "husky",
     "db:migrate": "prisma db push",
-    "db:format": "prisma format"
+    "db:format": "prisma format",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",

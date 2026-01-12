@@ -6,9 +6,11 @@ COPY package.json package-lock.json ./
 
 RUN npm i --omit=dev --ignore-scripts
 
-RUN npm i -g typescript tsc-alias
+RUN npm i -D typescript tsc-alias @types/node
 
 COPY . .
+
+RUN npm run db:generate
 
 RUN npm run build
 
