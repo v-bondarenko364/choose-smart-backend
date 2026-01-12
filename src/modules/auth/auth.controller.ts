@@ -8,19 +8,20 @@ import AuthService from './auth.service';
 const isProduction = process.env.NODE_ENV === 'production';
 
 class AuthController {
-  public static async loginWithToken(request: Request, response: Response) {
+  public static async verifyToken(request: Request, response: Response) {
     try {
-      const userData = await AuthService.verifyToken(request.body.token);
+      const data = await AuthService.verifyToken(request.body.token);
 
       response.cookie('token', request.body.token, {
         httpOnly: true,
         expires: addDays(new Date(), 7),
         secure: isProduction,
         domain: isProduction ? '.choosesm.art' : undefined,
-        sameSite: 'none',
+        sameSite: isProduction ? 'none' : 'lax',
+        maxAge: !data.isValid ? 0 : undefined,
       });
 
-      response.send(normalizeResponse(200, userData));
+      response.send(normalizeResponse(200, data));
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -31,7 +32,6 @@ class AuthController {
     }
   }
   public static async loginWithVendor(request: Request, response: Response) {
-    console.log('loginWithVendor', request.body);
     try {
       const { user, token } = await AuthService.loginWithVendor(
         request.body.token,
@@ -42,7 +42,7 @@ class AuthController {
         expires: addDays(new Date(), 7),
         secure: isProduction,
         domain: isProduction ? '.choosesm.art' : undefined,
-        sameSite: 'none',
+        sameSite: isProduction ? 'none' : 'lax',
       });
 
       response.send(normalizeResponse(200, { user }));

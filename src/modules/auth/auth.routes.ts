@@ -5,6 +5,6 @@ import AuthController from './auth.controller';
 const authRouter = Router();
 
 authRouter.post('/login/vendor', AuthController.loginWithVendor);
-authRouter.post('/login/token', AuthController.loginWithToken);
+authRouter.post('/token-verify', AuthController.verifyToken);
 
 export default authRouter;

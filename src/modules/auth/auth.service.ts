@@ -34,7 +34,6 @@ class AuthService {
         throw new Error('Invalid token payload');
       }
 
-      // FIXME: check name!!
       return {
         name: payload.name || '',
         vendorUserId: payload.sub,
@@ -68,7 +67,6 @@ class AuthService {
       const user = await Prisma.connection.user.findUnique({
         where: {
           id: decoded.id,
-          email: decoded.email,
         },
         select: userFieldsToSelect,
       });
@@ -78,11 +76,10 @@ class AuthService {
       }
 
       return {
-        user,
+        isValid: true,
       };
-    } catch (error) {
-      console.error('Token verification error:', error);
-      throw new Error('Invalid or expired token');
+    } catch {
+      return { isValid: false };
     }
   }
   public static async loginWithVendor(token: string) {
