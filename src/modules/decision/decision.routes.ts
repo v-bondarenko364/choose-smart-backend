@@ -12,6 +12,8 @@ decisionRouter.get('/', DecisionController.getDecisions);
 
 decisionRouter.post('/', DecisionController.createDecision);
 
+decisionRouter.post('/analyze', DecisionController.analyzeDecisions);
+
 decisionRouter.post('/:id/retry', DecisionController.retryDecision);
 
 export default decisionRouter;

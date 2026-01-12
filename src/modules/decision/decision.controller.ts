@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { normalizeResponse } from '@/utils/general';
 
 import DecisionService from './decision.service';
+import { generateInsights } from '@/utils/tasks';
 
 class DecisionController {
   public static async getDecisions(request: Request, response: Response) {
@@ -48,6 +49,21 @@ class DecisionController {
         error instanceof Error
           ? error.message
           : 'Error during retrying decision';
+
+      response.status(400).send(normalizeResponse(400, errorMessage));
+    }
+  }
+  // testing endpoint
+  public static async analyzeDecisions(_: Request, response: Response) {
+    try {
+      await generateInsights();
+
+      response.status(200).send(normalizeResponse(200, {}));
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Error during analyzing decisions';
 
       response.status(400).send(normalizeResponse(400, errorMessage));
     }
