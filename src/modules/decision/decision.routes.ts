@@ -12,7 +12,8 @@ decisionRouter.get('/', DecisionController.getDecisions);
 
 decisionRouter.post('/', DecisionController.createDecision);
 
-decisionRouter.post('/analyze', DecisionController.analyzeDecisions);
+// Endpoint for manual triggering analyzing pending decisions (for testing purposes)
+// decisionRouter.post('/analyze', DecisionController.analyzeDecisions);
 
 decisionRouter.post('/:id/retry', DecisionController.retryDecision);
 

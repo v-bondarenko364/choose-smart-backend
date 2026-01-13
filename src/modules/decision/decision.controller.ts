@@ -53,7 +53,7 @@ class DecisionController {
       response.status(400).send(normalizeResponse(400, errorMessage));
     }
   }
-  // testing endpoint
+
   public static async analyzeDecisions(_: Request, response: Response) {
     try {
       await generateInsights();

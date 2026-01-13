@@ -1,6 +1,5 @@
 import { aiClient } from '@/clients/ai';
 import Prisma from '@/clients/prisma';
-import { normalizeResponse } from '@/utils/general';
 import { DecisionStatus } from '@generated/prisma/enums';
 
 type DecisionInput = {
@@ -82,7 +81,7 @@ class DecisionService {
       select: decisionFieldsToSelect,
     });
 
-    return normalizeResponse(200, updatedDecision);
+    return updatedDecision;
   }
 }
 
